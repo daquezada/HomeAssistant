@@ -1,0 +1,44 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+template:
+  - sensor:
+      - name: "Main AC Temperature (°F)"
+        unit_of_measurement: "°F"
+        state: >
+          {% set raw = state_attr('climate.main_ac', 'current_temperature') | float %}
+          {# Auto-detect format: tenths of °C, °C, or °F #}
+          {% if raw > 100 %}
+            {# Tenths of Celsius (e.g., 190 = 19.0°C) #}
+            {% set celsius = raw / 10 %}
+            {{ ((celsius * 9 / 5) + 32) | round(1) }}
+          {% elif raw < 45 %}
+            {# Degrees Celsius (e.g., 19.0°C) #}
+            {{ ((raw * 9 / 5) + 32) | round(1) }}
+          {% else %}
+            {# Likely Fahrenheit, use directly #}
+            {{ raw | round(1) }}
+          {% endif %}
+
+      - name: "Main AC Set Temp (°F)"
+        unit_of_measurement: "°F"
+        state: >
+          {% set raw = state_attr('climate.main_ac', 'temperature') | float %}
+          {% if raw > 100 %}
+            {% set celsius = raw / 10 %}
+            {{ ((celsius * 9 / 5) + 32) | round(1) }}
+          {% elif raw < 45 %}
+            {{ ((raw * 9 / 5) + 32) | round(1) }}
+          {% else %}
+            {{ raw | round(1) }}
+          {% endif %}
+
+group: !include groups.yaml
