@@ -1,0 +1,22 @@
+living_room_lights:
+  name: Living Room Lights
+  entities:
+    - light.hue_dinrm
+    - switch.plug4
+
+outlets:
+  name: Outlets
+  entities:
+    - switch.plug1
+    - switch.plug2
+#    - switch.plug3
+    - switch.plug4
+    - switch.plug5
+    
+lights:
+  name: Lights
+  entities:
+    - light.hue_dinrm
+    - light.hue_hlway
+    - light.hue_mtbrm
+    - light.wiz_bedrm
