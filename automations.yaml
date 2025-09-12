@@ -53,9 +53,9 @@
       target:
         entity_id:
           - switch.plug4
-          - switch.plug5
+          # - switch.plug5
   mode: single
-  
+
   # Dining Room Light ON: Early Morning
 - id: hue_dinrm_on_am
   alias: 'Dining Room Light ON: Early Morning'
@@ -74,7 +74,7 @@
 # Lights OFF: Early and Late Morning
 - id: lights_off_am
   alias: 'Lights OFF: Early and Late Morning'
-  description: 'Calls the ALL Lights: OFF automation at 00:00 and 08:30'
+  description: 'Turn off all lights and selected plugs at 00:00 and 08:30'
   trigger:
     - platform: time
       at: "00:00:00"
@@ -83,5 +83,10 @@
   action:
     - service: automation.trigger
       target:
-        entity_id: automation.lights_off
+        entity_id: automation.all_lights_off
+    - service: homeassistant.turn_off
+      target:
+        entity_id:
+          - switch.plug4
+          # - switch.plug5
   mode: single
