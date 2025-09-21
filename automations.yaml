@@ -21,7 +21,94 @@
       target:
         entity_id: group.outlets
   mode: single
+# Dining Room Light ON: Early Morning
+- id: hue_dinrm_on_am
+  alias: 'Dining Room Light ON: Early Morning'
+  trigger:
+    - platform: time
+      at: "06:00:00"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.hue_dinrm
+      data:
+        brightness_pct: 60
+        transition: 2
+  mode: single
 
+# Lights OFF: Early and Late Morning
+- id: lights_off_am
+  alias: 'Lights OFF: Early and Late Morning'
+  description: 'Turn off all lights and selected plugs at 00:00 and 08:30'
+  trigger:
+    - platform: time
+      at: "00:00:00"
+    - platform: time
+      at: "08:30:00"
+  action:
+    - service: homeassistant.turn_off
+      target:
+        entity_id:
+          - group.lights
+          - switch.plug4
+  mode: single
+
+# Lights ON: Afternoon (adaptive to weather)
+- id: lights_on_pm
+  alias: 'Lights ON: Afternoon'
+  description: 'Turns on lights 30 min before sunset, or 1 hr before sunset if cloudy/rainy'
+  trigger:
+    - platform: sun
+      event: sunset
+      offset: "-00:30:00"
+      id: normal
+    - platform: sun
+      event: sunset
+      offset: "-01:00:00"
+      id: early
+  action:
+    - choose:
+        # EARLY run if cloudy or rainy
+        - conditions:
+            - condition: trigger
+              id: early
+            - condition: state
+              entity_id: weather.forecast_home
+              match: any
+              state:
+                - cloudy
+                - rainy
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: group.lights
+              data:
+                brightness_pct: 90
+                transition: 2
+            - service: homeassistant.turn_on
+              target:
+                entity_id:
+                  - switch.plug4
+
+        # NORMAL run only if lights are still off (prevents double-activation)
+        - conditions:
+            - condition: trigger
+              id: normal
+            - condition: state
+              entity_id: group.lights
+              state: "off"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: group.lights
+              data:
+                brightness_pct: 90
+                transition: 2
+            - service: homeassistant.turn_on
+              target:
+                entity_id:
+                  - switch.plug4
+  mode: single
 # ALL Outlets: ON (manual/called by others)
 - id: outlets_on
   alias: 'ALL Outlets: ON'
