@@ -7,12 +7,12 @@ living_room_lights:
 outlets:
   name: Outlets
   entities:
-    - switch.plug1
+#   - switch.plug1
     - switch.plug2
-#    - switch.plug3
+#   - switch.plug3
     - switch.plug4
     - switch.plug5
-    
+
 lights:
   name: Lights
   entities:
