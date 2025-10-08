@@ -16,73 +16,41 @@
 # Lights OFF: Early and Late Morning
 - id: lights_off_am
   alias: 'Lights OFF: Early and Late Morning'
-  description: 'Turn off all lights and selected plugs at 00:00 and 08:30'
+  description: 'Turn OFF ALL Lights at 00:00 and 08:30'
+  mode: single
   trigger:
     - platform: time
       at: "00:00:00"
     - platform: time
       at: "08:30:00"
   action:
-    - service: homeassistant.turn_off
-      target:
-        entity_id:
-          - group.lights
-          - switch.plug4
-  mode: single
+    - service: script.lights_off
 
-# Lights ON: Afternoon (adaptive to weather)
-- id: lights_on_pm
-  alias: 'Lights ON: Afternoon'
-  description: 'Turns on lights 30 min before sunset, or 1 hr before sunset if cloudy/rainy'
+# Lights ON: 1 hr Before Sunset (Weather-Based)
+- id: lights_on_pm_early
+  alias: 'Lights ON: (-60m: weather-based)'
+  mode: single
+  trigger:
+    - platform: sun
+      event: sunset
+      offset: "-01:00:00"
+  condition:
+    - condition: template
+      value_template: >
+        {{ states('weather.forecast_home') | lower in ['cloudy', 'rainy'] }}
+  action:
+    - service: script.lights_on
+
+# Lights ON: 30 min Before Sunset
+- id: lights_on_pm_normal
+  alias: 'Lights ON: (-30m)'
+  mode: single
   trigger:
     - platform: sun
       event: sunset
       offset: "-00:30:00"
-      id: normal
-    - platform: sun
-      event: sunset
-      offset: "-01:00:00"
-      id: early
+  condition:
+    - condition: template
+      value_template: "{{ is_state('group.lights', 'off') }}"
   action:
-    - choose:
-        # EARLY run if cloudy or rainy
-        - conditions:
-            - condition: trigger
-              id: early
-            - condition: state
-              entity_id: weather.forecast_home
-              match: any
-              state:
-                - cloudy
-                - rainy
-          sequence:
-            - service: light.turn_on
-              target:
-                entity_id: group.lights
-              data:
-                brightness_pct: 90
-                transition: 2
-            - service: homeassistant.turn_on
-              target:
-                entity_id:
-                  - switch.plug4
-
-        # NORMAL run only if lights are still off (prevents double-activation)
-        - conditions:
-            - condition: trigger
-              id: normal
-            - condition: state
-              entity_id: group.lights
-              state: "off"
-          sequence:
-            - service: light.turn_on
-              target:
-                entity_id: group.lights
-              data:
-                brightness_pct: 90
-                transition: 2
-            - service: homeassistant.turn_on
-              target:
-                entity_id:
-                  - switch.plug4
-  mode: single
+    - service: script.lights_on
