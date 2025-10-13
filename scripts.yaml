@@ -1,0 +1,28 @@
+# Turn ALL Lights OFF
+lights_off:
+  alias: All Lights OFF
+  mode: single
+  sequence:
+    - service: light.turn_off
+      target:
+        entity_id: group.lights
+      data:
+        transition: 2   # fade out smoothly
+    - service: switch.turn_off
+      target:
+        entity_id: switch.plug4
+
+# Turn ALL Lights ON
+lights_on:
+  alias: All Lights ON
+  mode: single
+  sequence:
+    - service: light.turn_on
+      target:
+        entity_id: group.lights
+      data:
+        brightness_pct: 90
+        transition: 2
+    - service: switch.turn_on
+      target:
+        entity_id: switch.plug4
