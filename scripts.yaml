@@ -7,7 +7,7 @@ lights_off:
       target:
         entity_id: group.lights
       data:
-        transition: 2   # fade out smoothly
+        transition: 2
     - service: switch.turn_off
       target:
         entity_id: switch.plug4
