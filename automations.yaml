@@ -26,9 +26,9 @@
   action:
     - service: script.lights_off
 
-# Lights ON: 1 hr Before Sunset (Weather-Based)
+# Lights ON: 30 min Before Sunset (Weather-Based)
 - id: lights_on_pm_early
-  alias: 'Lights ON: (-60m: weather-based)'
+  alias: 'Lights ON: 60 min Before Sunset (Weather-Based)'
   mode: single
   trigger:
     - platform: sun
@@ -43,7 +43,7 @@
 
 # Lights ON: 30 min Before Sunset
 - id: lights_on_pm_normal
-  alias: 'Lights ON: (-30m)'
+  alias: 'Lights ON: 30 min Before Sunset'
   mode: single
   trigger:
     - platform: sun
