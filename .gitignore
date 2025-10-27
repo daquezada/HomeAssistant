@@ -1,4 +1,4 @@
-# exclude everything except *.py, *.sh, and requirements.txt
+# exclude everything except *.md, and *.yaml
 *
 !*/
 !*.md

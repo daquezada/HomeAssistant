@@ -16,7 +16,7 @@
 # Lights OFF: Early and Late Morning
 - id: lights_off_am
   alias: 'Lights OFF: Early and Late Morning'
-  description: 'Turn OFF ALL Lights at 00:00 and 08:30'
+  description: 'Turn OFF ALL Lights at midnight and 08:30'
   mode: single
   trigger:
     - platform: time
@@ -26,7 +26,7 @@
   action:
     - service: script.lights_off
 
-# Lights ON: 30 min Before Sunset (Weather-Based)
+# Lights ON: 60 min Before Sunset (Weather-Based)
 - id: lights_on_pm_early
   alias: 'Lights ON: 60 min Before Sunset (Weather-Based)'
   mode: single
