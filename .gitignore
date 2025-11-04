@@ -1,5 +1,15 @@
-# exclude everything except *.md, and *.yaml
+# Ignore everything
 *
+
+# Allow directories
 !*/
+
+# Allow docs
 !*.md
+
+# Allow HA configs (yaml + yml)
 !*.yaml
+!*.yml
+
+# Keep this file
+!.gitignore
